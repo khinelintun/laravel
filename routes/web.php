@@ -17,4 +17,9 @@ Route::get('/', function () {
     return view('welcome');
 });
 
+Route::get('contact', function (){
+    $data = "<script> alert('welcome')</script>";
+    return view('contact', ['data' =>$data]);
+});
+
 
