@@ -2,31 +2,19 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\Post;
 use Illuminate\Http\Request;
+use function dd;
+use function Sodium\add;
 
 class HomeController extends Controller
 {
     public function index(){
-            $data = [
-                'id' => '1',
-                'name' => 'mgmg',
-                'email' => 'mgmg@gmail.com',
-            ];
+           $data = Post::all();
+//           dd($data);
             return view('home', compact('data'));
     }
 
-    public function contact(){
-        $data = [
-            'table' => 'mgmg@gmail.com',
-        ];
-        return view('about', compact('data'));
-    }
 
-    public function about(){
-        $data = [
 
-            'database' => 'mgmg@gmail.com',
-        ];
-        return view('contact', compact('data'));
-    }
 }
