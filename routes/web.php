@@ -14,9 +14,16 @@ use App\Http\Controllers\HomeController;
 |
 */
 
-Route::get('/', [HomeController::class, 'index']);
+
+Route::resource('posts', HomeController::class);
 
 
+
+
+
+
+
+//Route::get('/', [HomeController::class, 'index']);
 //Route::get('contact', function (){
 //    $data = "<script> alert('welcome')</script>";
 //    return view('contact', ['data' =>$data]);
