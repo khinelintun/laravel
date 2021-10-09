@@ -2,7 +2,17 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\Category;
+use function abort;
+use function auth;
+use function dd;
+use function view;
+use App\Models\Post;
+use function compact;
+use function redirect;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Route;
+use App\Http\Requests\storePostRequest;
 
 class HomeController extends Controller
 {
@@ -13,7 +23,9 @@ class HomeController extends Controller
      */
     public function index()
     {
-        //
+//      $data = Post::all();
+        $data = Post::where('user_id',auth()->id())->orderBy('id','desc')->get();
+       return view('home', compact('data'));
     }
 
     /**
@@ -23,7 +35,8 @@ class HomeController extends Controller
      */
     public function create()
     {
-        //
+        $categories = Category::all();
+        return view('create', compact('categories'));
     }
 
     /**
@@ -32,9 +45,20 @@ class HomeController extends Controller
      * @param  \Illuminate\Http\Request  $request
      * @return \Illuminate\Http\Response
      */
-    public function store(Request $request)
+    public function store (storePostRequest $request)
     {
-        //
+//        Post::create([
+//            'name' => $request->name,
+//            'description'=>$request->description,
+//            'category_id'=>$request->category,
+//        ]);
+         //Retrieve the validated input data...
+//
+        $validated = $request->validated();
+        Post::create($validated);
+
+        return redirect('/posts');
+
     }
 
     /**
@@ -43,9 +67,13 @@ class HomeController extends Controller
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function show($id)
+    public function show(Post $post)
     {
-        //
+//        if ($post->user_id != auth()->id()){
+//            abort(403);
+//        }
+        $this->authorize('view',$post);
+        return view('show', compact('post'));
     }
 
     /**
@@ -54,9 +82,14 @@ class HomeController extends Controller
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function edit($id)
+    public function edit(Post $post)
     {
-        //
+//        if ($post->user_id != auth()->id()){
+//            abort(403);
+//        }
+        $this->authorize('view',$post);
+        $categories = Category::all();
+        return view('edit', compact('post','categories'));
     }
 
     /**
@@ -66,9 +99,24 @@ class HomeController extends Controller
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function update(Request $request, $id)
+    public function update(storePostRequest $request, Post $post)
     {
-        //
+        // $post = Post::findOrFail($id); //old data
+        $request->validate([
+            'name' => 'required|max:30',
+            'description' => 'required|max:255',
+        ]);
+
+//        $post -> name = $request->name;  // update data
+//        $post->description = $request->description;
+//        $post->save();
+//        'name'=>$request->name,
+//        'description'=>$request->description,
+//        'category_id'=>$request->category_id,
+        $validated = $request->validated();
+        $post->update($validated);
+        return redirect('/posts');
+
     }
 
     /**
@@ -77,8 +125,10 @@ class HomeController extends Controller
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function destroy($id)
+    public function destroy(Post $post)
     {
-        //
+        $post->delete();
+        return redirect('/posts');
+
     }
 }

@@ -6,6 +6,7 @@ use Illuminate\Database\Seeder;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Str;
 use function date;
+use function integerValue;
 use function now;
 
 class PostSeeder extends Seeder
