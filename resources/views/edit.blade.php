@@ -11,6 +11,12 @@
             <div class="card-header" style="text-align: center">
                 Edit Post
             </div>
+            @if (session('status'))
+                <div class="alert alert-success alert-dismissible fade show mt-2">
+                    <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+                    <strong></strong>{{ session('status') }}
+                </div>
+            @endif
             <div class="card-body">
 
             @if ($errors->any())

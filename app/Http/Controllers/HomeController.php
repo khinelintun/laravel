@@ -2,7 +2,10 @@
 
 namespace App\Http\Controllers;
 
+use App\Mail\PostStored;
 use App\Models\Category;
+use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Mail;
 use function abort;
 use function auth;
 use function dd;
@@ -21,9 +24,14 @@ class HomeController extends Controller
      *
      * @return \Illuminate\Http\Response
      */
-    public function index()
+    public function index(Request $request)
     {
 //      $data = Post::all();
+
+//        Mail::raw('hello world', function ($msg){
+//            $msg->to('khinelintun567@gmail.com')->subject('AP Index function');
+//        });
+
         $data = Post::where('user_id',auth()->id())->orderBy('id','desc')->get();
        return view('home', compact('data'));
     }
@@ -55,9 +63,11 @@ class HomeController extends Controller
          //Retrieve the validated input data...
 //
         $validated = $request->validated();
-        Post::create($validated);
+        Post::create($validated + ['user_id'=>Auth::user()->id]);
 
-        return redirect('/posts');
+//        Mail::to('harrylin567@gmail.com')->send(new PostStored());
+
+        return redirect('/posts')->with('status', 'successfully created');
 
     }
 
@@ -115,7 +125,7 @@ class HomeController extends Controller
 //        'category_id'=>$request->category_id,
         $validated = $request->validated();
         $post->update($validated);
-        return redirect('/posts');
+        return redirect('/posts')->with('status', 'successfully updated');
 
     }
 
@@ -128,7 +138,7 @@ class HomeController extends Controller
     public function destroy(Post $post)
     {
         $post->delete();
-        return redirect('/posts');
+        return redirect('/posts')->with('status', 'successfully deleted');
 
     }
 }
